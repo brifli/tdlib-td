@@ -22,7 +22,7 @@ uint64 NetQueryStats::get_count() const {
 
 void NetQueryStats::dump_pending_network_queries() {
   auto n = get_count();
-  LOG(WARNING) << tag("pending net queries", n);
+  LOG(INFO) << tag("pending net queries", n);
 
   if (!use_list_) {
     return;
@@ -35,19 +35,19 @@ void NetQueryStats::dump_pending_network_queries() {
     cur = cur->get_prev();
     if (i < 20 || i + 20 > n || i % (n / 20 + 1) == 0) {
       if (was_gap) {
-        LOG(WARNING) << "...";
+        LOG(INFO) << "...";
         was_gap = false;
       }
       const NetQueryDebug &debug = cur->get_data_unsafe();
       const NetQuery &nq = *static_cast<const NetQuery *>(cur);
-      LOG(WARNING) << tag("user", lpad(PSTRING() << debug.my_id_, 10, ' ')) << nq
-                   << tag("total flood", format::as_time(nq.total_timeout_))
-                   << tag("since start", format::as_time(Time::now_cached() - debug.start_timestamp_))
-                   << tag("state", debug.state_)
-                   << tag("in this state", format::as_time(Time::now_cached() - debug.state_timestamp_))
-                   << tag("state changed", debug.state_change_count_) << tag("resend count", debug.resend_count_)
-                   << tag("fail count", debug.send_failed_count_) << tag("ack state", debug.ack_state_)
-                   << tag("unknown", debug.unknown_state_);
+      LOG(INFO) << tag("user", lpad(PSTRING() << debug.my_id_, 10, ' ')) << nq
+                << tag("total flood", format::as_time(nq.total_timeout_))
+                << tag("since start", format::as_time(Time::now_cached() - debug.start_timestamp_))
+                << tag("state", debug.state_)
+                << tag("in this state", format::as_time(Time::now_cached() - debug.state_timestamp_))
+                << tag("state changed", debug.state_change_count_) << tag("resend count", debug.resend_count_)
+                << tag("fail count", debug.send_failed_count_) << tag("ack state", debug.ack_state_)
+                << tag("unknown", debug.unknown_state_);
     } else {
       was_gap = true;
     }
